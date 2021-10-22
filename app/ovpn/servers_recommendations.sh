@@ -44,7 +44,7 @@ if [[ ! -v SERVER ]]; then
 
     #GET fastest server based on COUNTRY
     #https://api.nordvpn.com/v1/servers/recommendations?limit=10&filters=[country_id]=106
-    curl -s $SERVER_RECOMMENDATIONS_URL$QUERY_PARAM -o $JSON_FILE
+    curl --connect-timeout 3 --max-time 5 -s $SERVER_RECOMMENDATIONS_URL$QUERY_PARAM -o $JSON_FILE
 
     NUMBER_OF_SERVERS="$(jq length $JSON_FILE)"
     DESIRED_SERVER_NUMBER="$(shuf -i 0-$(($NUMBER_OF_SERVERS - 1)) -n 1)"
