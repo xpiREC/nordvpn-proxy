@@ -13,6 +13,7 @@ fi
 
 #Check serverload with expected load
 if [ $server_load -gt $LOAD ]; then
+    /app/ovpn/servers_recommendations.sh
     echo "$(adddate) WARNING: Load on $nordvpn_hostname is to high! Current load is $server_load and expected is $LOAD"
     echo "$(adddate) WARNING: OpenVPN will be restarted!"
     pgrep openvpn | xargs kill -15

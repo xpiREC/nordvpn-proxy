@@ -50,11 +50,18 @@ if [[ ! -v SERVER ]]; then
     DESIRED_SERVER_NUMBER="$(shuf -i 0-$(($NUMBER_OF_SERVERS - 1)) -n 1)"
 
     #Set vars
-    export SERVER="$(jq -r '.['$DESIRED_SERVER_NUMBER'].hostname' $JSON_FILE)"
-    export SERVERNAME="$(jq -r '.['$DESIRED_SERVER_NUMBER'].name' $JSON_FILE)"
-    export LOAD="$(jq -r '.['$DESIRED_SERVER_NUMBER'].load' $JSON_FILE)"
-    export UPDATED_AT="$(jq -r '.['$DESIRED_SERVER_NUMBER'].updated_at' $JSON_FILE)"
-    export IP="$(jq -r '.['$DESIRED_SERVER_NUMBER'].station' $JSON_FILE)"
+    #export SERVER="$(jq -r '.['$DESIRED_SERVER_NUMBER'].hostname' $JSON_FILE)"
+    #export SERVERNAME="$(jq -r '.['$DESIRED_SERVER_NUMBER'].name' $JSON_FILE)"
+    #export LOAD="$(jq -r '.['$DESIRED_SERVER_NUMBER'].load' $JSON_FILE)"
+    #export UPDATED_AT="$(jq -r '.['$DESIRED_SERVER_NUMBER'].updated_at' $JSON_FILE)"
+    #export IP="$(jq -r '.['$DESIRED_SERVER_NUMBER'].station' $JSON_FILE)"
+
+    echo "$(jq -r '.['$DESIRED_SERVER_NUMBER'].hostname' $JSON_FILE)" > /tmp/nordvpn_server
+    echo "$(jq -r '.['$DESIRED_SERVER_NUMBER'].name' $JSON_FILE)" > /tmp/nordvpn_servername
+    echo "$(jq -r '.['$DESIRED_SERVER_NUMBER'].load' $JSON_FILE)" > /tmp/nordvpn_load
+    echo "$(jq -r '.['$DESIRED_SERVER_NUMBER'].updated_at' $JSON_FILE)" > /tmp/nordvpn_updated_at
+    echo "$(jq -r '.['$DESIRED_SERVER_NUMBER'].station' $JSON_FILE)" > /tmp/nordvpn_ip
+
     echo "$(jq -r '.['$DESIRED_SERVER_NUMBER'].hostname' $JSON_FILE)"
     echo "$(jq -r '.['$DESIRED_SERVER_NUMBER'].hostname' $JSON_FILE)" > /tmp/nordvpn_hostname
 
@@ -64,9 +71,14 @@ else
     curl --silent https://api.nordvpn.com/server | jq '.[] | select(.domain == '\"$SERVER\"')' > $JSON_FILE
 
     #Set vars
-    export SERVERNAME="$(jq -r '.name' $JSON_FILE)"
-    export LOAD=$(curl -s $SERVER_STATS_URL$SERVER | jq -r '.[]')
-    export UPDATED_AT=""
-    export IP="$(jq -r '.ip_address' $JSON_FILE)"
+    #export SERVERNAME="$(jq -r '.name' $JSON_FILE)"
+    #export LOAD=$(curl -s $SERVER_STATS_URL$SERVER | jq -r '.[]')
+    #export UPDATED_AT=""
+    #export IP="$(jq -r '.ip_address' $JSON_FILE)"
+    echo "$(jq -r '.name' $JSON_FILE)" > /tmp/nordvpn_servername
+    echo "$(curl -s $SERVER_STATS_URL$SERVER | jq -r '.[]')" > /tmp/nordvpn_load
+    echo "" > /tmp/nordvpn_updated_at
+    echo "$(jq -r '.ip_address' $JSON_FILE)" > /tmp/nordvpn_ip
+
     echo "$SERVER" > /tmp/nordvpn_hostname
 fi

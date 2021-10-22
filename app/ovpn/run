@@ -2,7 +2,6 @@
 set -e -u -o pipefail
 
 source /app/ovpn/get-ovpn-files.sh
-source /app/ovpn/servers_recommendations.sh
 
 . /app/date.sh --source-only
 
@@ -13,6 +12,16 @@ if [ ! -c /dev/net/tun ]; then
     mknod /dev/net/tun c 10 200
     chmod 600 /dev/net/tun
 fi
+
+if [ ! -f /tmp/nordvpn_servername ]; then
+  /app/ovpn/servers_recommendations.sh
+fi
+
+SERVER=$(cat /tmp/nordvpn_server)
+SERVERNAME=$(cat /tmp/nordvpn_servername)
+LOAD=$(cat /tmp/nordvpn_load)
+UPDATED_AT=$(cat /tmp/nordvpn_updated_at)
+IP=$(cat /tmp/nordvpn_ip)
 
 echo ########################################################
 echo "$(adddate) INFO: Connection to server: $SERVERNAME"
