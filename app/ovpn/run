@@ -17,6 +17,13 @@ if [ ! -f /tmp/nordvpn_hostname ]; then
   /app/ovpn/servers_recommendations.sh
 fi
 
+#Check hostname value is not empty
+nordvpn_hostname=$(cat /tmp/nordvpn_hostname)
+if [ -z "$nordvpn_hostname" ]; then
+  sleep 10
+  /app/ovpn/servers_recommendations.sh
+fi
+
 SERVER=$(cat /tmp/nordvpn_server)
 SERVERNAME=$(cat /tmp/nordvpn_servername)
 LOAD=$(cat /tmp/nordvpn_load)
