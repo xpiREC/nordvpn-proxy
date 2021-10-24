@@ -13,8 +13,11 @@ if [ ! -c /dev/net/tun ]; then
     chmod 600 /dev/net/tun
 fi
 
-if [ ! -f /tmp/nordvpn_servername ]; then
-  /app/ovpn/servers_recommendations.sh
+#Check hostname value is not empty
+nordvpn_hostname=$(cat /tmp/nordvpn_hostname)
+if [ -z "$nordvpn_hostname" ];then
+    sleep 10
+    /app/ovpn/servers_recommendations.sh
 fi
 
 SERVER=$(cat /tmp/nordvpn_server)
