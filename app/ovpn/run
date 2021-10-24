@@ -20,7 +20,7 @@ fi
 #Check hostname value is not empty
 nordvpn_hostname=$(cat /tmp/nordvpn_hostname)
 if [ -z "$nordvpn_hostname" ]; then
-  sleep 10
+  sleep 2
   /app/ovpn/servers_recommendations.sh
 fi
 
