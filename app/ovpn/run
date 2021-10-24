@@ -7,17 +7,14 @@ source /app/ovpn/get-ovpn-files.sh
 
 # Create a tun device see: https://www.kernel.org/doc/Documentation/networking/tuntap.txt
 if [ ! -c /dev/net/tun ]; then
-    echo "$(adddate) INFO: Creating tun interface /dev/net/tun"
-    mkdir -p /dev/net
-    mknod /dev/net/tun c 10 200
-    chmod 600 /dev/net/tun
+  echo "$(adddate) INFO: Creating tun interface /dev/net/tun"
+  mkdir -p /dev/net
+  mknod /dev/net/tun c 10 200
+  chmod 600 /dev/net/tun
 fi
 
-#Check hostname value is not empty
-nordvpn_hostname=$(cat /tmp/nordvpn_hostname)
-if [ -z "$nordvpn_hostname" ];then
-    sleep 10
-    /app/ovpn/servers_recommendations.sh
+if [ ! -f /tmp/nordvpn_hostname ]; then
+  /app/ovpn/servers_recommendations.sh
 fi
 
 SERVER=$(cat /tmp/nordvpn_server)
@@ -39,12 +36,12 @@ cd /app/ovpn/config/ovpn_${PROTOCOL,,}
 if [ -n "$SERVER" ]; then
   set -- "$@" '--config' "${SERVER}.${PROTOCOL,,}.ovpn"
 else
-  echo "$(adddate) ERROR: No OpenVPN config found in `pwd`/${SERVER}.${PROTOCOL,,}.ovpn. Exiting."
+  echo "$(adddate) ERROR: No OpenVPN config found in $(pwd)/${SERVER}.${PROTOCOL,,}.ovpn. Exiting."
   exit 1
 fi
 if [ -n "$USERNAME" -a -n "$PASSWORD" ]; then
-  echo "$USERNAME" > auth.conf
-  echo "$PASSWORD" >> auth.conf
+  echo "$USERNAME" >auth.conf
+  echo "$PASSWORD" >>auth.conf
   chmod 600 auth.conf
   set -- "$@" '--auth-user-pass' 'auth.conf'
 else

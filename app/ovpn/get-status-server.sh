@@ -5,6 +5,14 @@
 nordvpn_hostname=$(cat /tmp/nordvpn_hostname)
 server_load=$(curl -s $SERVER_STATS_URL$nordvpn_hostname | jq -r '.[]')
 
+#Check hostname value is not empty
+if [ -z "$nordvpn_hostname" ];then
+    sleep 10
+    /app/ovpn/servers_recommendations.sh
+    pgrep openvpn | xargs kill -15
+    exit 1
+fi
+
 #Check serverload value is not empty
 if [ -z "$server_load" ];then
     echo "$(adddate) ERROR: No response from NordVPN API to get server load. This check to restart OpenVPN will be ignored."
