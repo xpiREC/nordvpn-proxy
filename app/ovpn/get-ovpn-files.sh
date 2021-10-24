@@ -23,9 +23,14 @@ function download_files {
 
   #Print out logging
   if [ $? -eq 0 ]; then
-      echo "$(adddate) INFO: OVPN files successfully unzipped to $OVPN_CONFIG_DIR"
+    echo "$(adddate) INFO: OVPN files successfully unzipped to $OVPN_CONFIG_DIR"
+
+    for file in $(ls ${OVPN_CONFIG_DIR}/ovpn_tcp/*.ovpn); do
+      sed -i '/auth-user-pass/d' $file
+    done
+
   else
-      echo "$(adddate) ERROR: OVPN files unzipped failed!"
+    echo "$(adddate) ERROR: OVPN files unzipped failed!"
   fi
 }
 
